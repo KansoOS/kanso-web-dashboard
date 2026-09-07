@@ -1,6 +1,6 @@
-import { getPolicies } from "../api/policies";
+import { getPolicy } from "../api/policies";
 import { useAsync } from "./useAsync";
 
-export function usePolicies() {
-  return useAsync(getPolicies, []);
+export function usePolicy(spaceId: string) {
+  return useAsync(() => getPolicy(spaceId), [spaceId]);
 }

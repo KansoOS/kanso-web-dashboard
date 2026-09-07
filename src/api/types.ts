@@ -1,78 +1,81 @@
-// Types générés à partir du contrat d'API v1 (draft, non validé par le backend).
+// Types générés à partir du contrat d'API v2 (basé sur le cahier des charges backend d'Elias).
 // Voir API-CONTRACT.md à la racine du repo.
 
-export type DeviceStatus = "online" | "offline" | "pending";
-export type PolicyType = "screenTime" | "appBlock" | "schedule";
-export type CommandType = "lock" | "wipe" | "reboot";
-export type CommandStatus = "sent" | "failed";
+export type AutonomyDomain = "communication" | "demarches" | "medias" | "achats";
+export type ContactTrustLevel = "connu" | "en_validation" | "inconnu";
+export type RequestType = "passage_niveau" | "ajout_contact" | "acces_application";
+export type RequestStatus = "en_attente" | "acceptee" | "refusee";
 
-export interface User {
+/** Périmètre de mandat : liste ouverte de capacités, ex. "contacts.gerer" — jamais un booléen. */
+export type MandatePermission = string;
+
+export interface SpaceSummary {
   id: string;
-  email: string;
+  nom_affichage: string;
 }
 
-export interface AuthResponse {
-  token: string;
-  user: User;
+export interface Me {
+  id: string;
+  identifiant: string;
+  espaces: SpaceSummary[];
 }
 
-export interface Child {
+export interface SignupResult {
   id: string;
-  name: string;
+  identifiant: string;
 }
 
-export interface Household {
+export interface LoginChallenge {
+  totp_challenge: string;
+}
+
+export interface Mandate {
   id: string;
-  children: Child[];
+  perimetre: MandatePermission[];
+  date_debut: string;
+  date_fin: string;
+  revoque_le: string | null;
+  revoque_par: string | null;
 }
 
 export interface Device {
   id: string;
-  name: string;
-  childId: string;
-  status: DeviceStatus;
-  lastSyncAt: string;
+  etat: string;
+  derniere_synchronisation: string;
 }
 
-export interface DeviceDetail extends Device {
-  policies: string[];
+export interface PairingCode {
+  code: string;
+  expires_at: string;
 }
-
-export interface EnrollmentToken {
-  enrollmentToken: string;
-  qrCodeData: string;
-  expiresAt: string;
-}
-
-export interface DeviceCommandResult {
-  commandId: string;
-  status: CommandStatus;
-}
-
-export interface ScreenTimeConfig {
-  dailyLimitMinutes: number;
-}
-
-export interface AppBlockConfig {
-  blockedPackages: string[];
-}
-
-export interface ScheduleConfig {
-  allowedFrom: string;
-  allowedTo: string;
-}
-
-export type PolicyConfig = ScreenTimeConfig | AppBlockConfig | ScheduleConfig;
 
 export interface Policy {
-  id: string;
-  name: string;
-  type: PolicyType;
-  config: PolicyConfig;
-  assignedDeviceIds: string[];
+  version: number;
+  profils: Record<AutonomyDomain, number>;
 }
 
-export interface PolicyAssignment {
-  policyId: string;
-  assignedDeviceIds: string[];
+export interface Contact {
+  id: string;
+  libelle: string;
+  niveau_confiance: ContactTrustLevel;
+}
+
+export interface EventItem {
+  id: string;
+  type: string;
+  horodatage: string;
+}
+
+export interface EventPage {
+  items: EventItem[];
+  page: number;
+  has_more: boolean;
+}
+
+export interface RequestItem {
+  id: string;
+  type: RequestType;
+  detail: Record<string, unknown>;
+  statut: RequestStatus;
+  cree_le: string;
 }

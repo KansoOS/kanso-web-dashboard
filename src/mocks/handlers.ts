@@ -1,108 +1,138 @@
 import { http, HttpResponse } from "msw";
 import type {
-  Child,
-  CommandType,
-  Device,
-  DeviceCommandResult,
-  EnrollmentToken,
-  Policy,
-  PolicyConfig,
-  PolicyType,
+  AutonomyDomain,
+  Contact,
+  ContactTrustLevel,
+  RequestStatus,
 } from "../api/types";
-import { mockDeviceDetails, mockDevices, mockHousehold, mockPolicies } from "./data";
+import {
+  mockContacts,
+  mockDevices,
+  mockEvents,
+  mockMandate,
+  mockMe,
+  mockPolicy,
+  mockRequests,
+} from "./data";
 
 let devices = [...mockDevices];
-let policies = [...mockPolicies];
-const household = { ...mockHousehold, children: [...mockHousehold.children] };
+let contacts = [...mockContacts];
+let requests = [...mockRequests];
+const mandate = { ...mockMandate };
+let policy = { ...mockPolicy, profils: { ...mockPolicy.profils } };
 
 let nextId = 100;
 const newId = (prefix: string) => `${prefix}-${nextId++}`;
 
 export const handlers = [
-  http.post("*/auth/signup", async ({ request }) => {
-    const { email } = (await request.json()) as { email: string; password: string };
-    return HttpResponse.json({ id: newId("user"), email }, { status: 201 });
+  http.post("*/v1/auth/signup", async ({ request }) => {
+    const { identifiant } = (await request.json()) as { identifiant: string };
+    return HttpResponse.json({ id: newId("user"), identifiant }, { status: 201 });
   }),
 
-  http.post("*/auth/login", async ({ request }) => {
-    const { email } = (await request.json()) as { email: string; password: string };
-    return HttpResponse.json({
-      token: "mock-jwt-token",
-      user: { id: "user-1", email },
+  http.post("*/v1/auth/login", () => {
+    return HttpResponse.json({ totp_challenge: "mock-totp-challenge" });
+  }),
+
+  http.post("*/v1/auth/totp", () => {
+    return new HttpResponse(null, {
+      status: 200,
+      headers: { "Set-Cookie": "session=mock-session; HttpOnly; Path=/" },
     });
   }),
 
-  http.get("*/household", () => {
-    return HttpResponse.json(household);
+  http.post("*/v1/auth/logout", () => {
+    return new HttpResponse(null, { status: 204 });
   }),
 
-  http.post("*/household/children", async ({ request }) => {
-    const { name } = (await request.json()) as { name: string };
-    const child: Child = { id: newId("child"), name };
-    household.children.push(child);
-    return HttpResponse.json(child, { status: 201 });
+  http.get("*/v1/me", () => {
+    return HttpResponse.json(mockMe);
   }),
 
-  http.get("*/devices", () => {
+  http.get("*/v1/spaces/:id", ({ params }) => {
+    const space = mockMe.espaces.find((s) => s.id === params.id);
+    if (!space) return new HttpResponse(null, { status: 404 });
+    return HttpResponse.json(space);
+  }),
+
+  http.get("*/v1/spaces/:id/mandate", () => {
+    return HttpResponse.json(mandate);
+  }),
+
+  http.post("*/v1/spaces/:id/mandate/revoke", () => {
+    mandate.revoque_le = new Date().toISOString();
+    mandate.revoque_par = mockMe.id;
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.post("*/v1/spaces/:id/devices/pairing-code", () => {
+    return HttpResponse.json(
+      { code: `${Math.floor(100000 + Math.random() * 900000)}`, expires_at: new Date(Date.now() + 10 * 60_000).toISOString() },
+      { status: 201 }
+    );
+  }),
+
+  http.get("*/v1/spaces/:id/devices", () => {
     return HttpResponse.json(devices);
   }),
 
-  http.get("*/devices/:id", ({ params }) => {
-    const detail = mockDeviceDetails[params.id as string];
-    if (!detail) return new HttpResponse(null, { status: 404 });
-    return HttpResponse.json(detail);
-  }),
-
-  http.post("*/devices/enroll-token", async () => {
-    const body: EnrollmentToken = {
-      enrollmentToken: `enroll-${nextId++}`,
-      qrCodeData: "data:image/png;base64,mock",
-      expiresAt: new Date(Date.now() + 15 * 60_000).toISOString(),
-    };
-    return HttpResponse.json(body, { status: 201 });
-  }),
-
-  http.post("*/devices/:id/command", async ({ request }) => {
-    const { type } = (await request.json()) as { type: CommandType };
-    const result: DeviceCommandResult = { commandId: newId("cmd"), status: "sent" };
-    void type;
-    return HttpResponse.json(result, { status: 202 });
-  }),
-
-  http.delete("*/devices/:id", ({ params }) => {
-    devices = devices.filter((d: Device) => d.id !== params.id);
+  http.post("*/v1/devices/:id/revoke", ({ params }) => {
+    devices = devices.filter((d) => d.id !== params.id);
     return new HttpResponse(null, { status: 204 });
   }),
 
-  http.get("*/policies", () => {
-    return HttpResponse.json(policies);
+  http.get("*/v1/spaces/:id/policy", () => {
+    return HttpResponse.json(policy);
   }),
 
-  http.post("*/policies", async ({ request }) => {
-    const body = (await request.json()) as { name: string; type: PolicyType; config: PolicyConfig };
-    const policy: Policy = { id: newId("policy"), assignedDeviceIds: [], ...body };
-    policies.push(policy);
-    return HttpResponse.json(policy, { status: 201 });
+  http.put("*/v1/spaces/:id/policy", async ({ request }) => {
+    const body = (await request.json()) as { profils: Record<AutonomyDomain, number> };
+    policy = { version: policy.version + 1, profils: body.profils };
+    return HttpResponse.json(policy);
   }),
 
-  http.put("*/policies/:id", async ({ params, request }) => {
-    const body = (await request.json()) as { name: string; type: PolicyType; config: PolicyConfig };
-    const existing = policies.find((p) => p.id === params.id);
-    if (!existing) return new HttpResponse(null, { status: 404 });
-    Object.assign(existing, body);
-    return HttpResponse.json(existing);
+  http.get("*/v1/spaces/:id/contacts", () => {
+    return HttpResponse.json(contacts);
   }),
 
-  http.delete("*/policies/:id", ({ params }) => {
-    policies = policies.filter((p) => p.id !== params.id);
+  http.post("*/v1/spaces/:id/contacts", async ({ request }) => {
+    const { libelle } = (await request.json()) as { libelle: string; numero: string };
+    const contact: Contact = { id: newId("contact"), libelle, niveau_confiance: "en_validation" };
+    contacts.push(contact);
+    return HttpResponse.json(contact, { status: 201 });
+  }),
+
+  http.patch("*/v1/spaces/:id/contacts/:cid", async ({ params, request }) => {
+    const { niveau_confiance } = (await request.json()) as { niveau_confiance: ContactTrustLevel };
+    const contact = contacts.find((c) => c.id === params.cid);
+    if (!contact) return new HttpResponse(null, { status: 404 });
+    contact.niveau_confiance = niveau_confiance;
+    return HttpResponse.json(contact);
+  }),
+
+  http.delete("*/v1/spaces/:id/contacts/:cid", ({ params }) => {
+    contacts = contacts.filter((c) => c.id !== params.cid);
     return new HttpResponse(null, { status: 204 });
   }),
 
-  http.post("*/policies/:id/assign", async ({ params, request }) => {
-    const { deviceIds } = (await request.json()) as { deviceIds: string[] };
-    const policy = policies.find((p) => p.id === params.id);
-    if (!policy) return new HttpResponse(null, { status: 404 });
-    policy.assignedDeviceIds = deviceIds;
-    return HttpResponse.json({ policyId: policy.id, assignedDeviceIds: deviceIds });
+  http.get("*/v1/spaces/:id/events", ({ request }) => {
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get("page") ?? "1");
+    return HttpResponse.json({ items: mockEvents, page, has_more: false });
+  }),
+
+  http.get("*/v1/spaces/:id/requests", ({ request }) => {
+    const url = new URL(request.url);
+    const statut = url.searchParams.get("statut") as RequestStatus | null;
+    const items = statut ? requests.filter((r) => r.statut === statut) : requests;
+    return HttpResponse.json(items);
+  }),
+
+  http.post("*/v1/spaces/:id/requests/:rid/answer", async ({ params, request }) => {
+    const { reponse } = (await request.json()) as { reponse: "acceptee" | "refusee"; motif: string };
+    const found = requests.find((r) => r.id === params.rid);
+    if (!found) return new HttpResponse(null, { status: 404 });
+    found.statut = reponse;
+    return HttpResponse.json(found);
   }),
 ];
