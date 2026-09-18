@@ -1,9 +1,18 @@
+import { useState } from "react"
 import { LoginForm } from "./components/LoginForm"
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  if (isLoggedIn) {
+    return <div>
+      Dashboard
+    </div>
+  }
+
   return <div>
-    Dashboard
-    <LoginForm />
+    Login
+    <LoginForm onLoginSuccess={() => setIsLoggedIn(true)} />
   </div>
 }
 

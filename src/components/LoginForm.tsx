@@ -1,21 +1,28 @@
 import { useState } from 'react';
 import { login, verifyTotp } from '../api';
 
-function LoginForm() {
+function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
     const [state, setState] = useState({
         identifiant: '',
         mot_de_passe: '',
     });
     const [totpChallenge, setTotpChallenge] = useState<string | null>(null);
     const [totpCode, setTotpCode] = useState('');
+    const [error, setError] = useState<string | null>(null);
+
     if (totpChallenge) {
         return (
             <div>
                 <h2>Two-Factor Authentication</h2>
                 <form onSubmit={async (e) => {
                     e.preventDefault();
-                    await verifyTotp(totpChallenge, totpCode);
-                    console.log('TOTP verified successfully');
+                    setError(null);
+                    try {
+                        await verifyTotp(totpChallenge, totpCode);
+                        onLoginSuccess();
+                    } catch (err) {
+                        setError('Invalid TOTP code. Please try again.');
+                    }
                 }}>
                     <div>
                         <label htmlFor="totp">Enter TOTP Code:</label>
@@ -26,6 +33,7 @@ function LoginForm() {
                             value={totpCode}
                             onChange={(e) => setTotpCode(e.target.value)}
                         />
+                        {error && <p style={{ color: 'red' }}>{error}</p>}
                     </div>
                     <button type="submit">Verify</button>
                 </form>
@@ -37,8 +45,13 @@ function LoginForm() {
             <h2>Login</h2>
             <form onSubmit={async (e) => {
                 e.preventDefault();
-                const response = await login(state.identifiant, state.mot_de_passe);
-                setTotpChallenge(response.totp_challenge);
+                setError(null);
+                try {
+                    const response = await login(state.identifiant, state.mot_de_passe);
+                    setTotpChallenge(response.totp_challenge);
+                } catch (err) {
+                    setError('Invalid username or password. Please try again.');
+                }
             }}>
                 <div>
                     <label htmlFor="username">Username:</label>
@@ -60,6 +73,7 @@ function LoginForm() {
                         onChange={(e) => setState({...state, mot_de_passe: e.target.value})}
                     />
                 </div>
+                {error && <p style={{ color: 'red' }}>{error}</p>}
                 <button type="submit">Login</button>
             </form>
         </div>

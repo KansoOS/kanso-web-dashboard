@@ -26,12 +26,17 @@ const newId = (prefix: string) => `${prefix}-${nextId++}`;
 
 export const handlers = [
   http.post("*/v1/auth/signup", async ({ request }) => {
-    const { identifiant } = (await request.json()) as { identifiant: string };
-    return HttpResponse.json({ id: newId("user"), identifiant }, { status: 201 });
-  }),
+  const { identifiant } = (await request.json()) as { identifiant: string };
+  return HttpResponse.json({ id: newId("user"), identifiant }, { status: 201 });
+}),
 
-  http.post("*/v1/auth/login", () => {
-    return HttpResponse.json({ totp_challenge: "mock-totp-challenge" });
+  http.post("*/v1/auth/login", async ({ request }) => {
+    const { identifiant, mot_de_passe } = (await request.json()) as { identifiant: string; mot_de_passe: string };
+    if (identifiant === "test" && mot_de_passe === "test") {
+      return HttpResponse.json({ totp_challenge: "mock-totp-challenge" });
+    } else {
+      return new HttpResponse(null, { status: 401 });
+    }
   }),
 
   http.post("*/v1/auth/totp", () => {
