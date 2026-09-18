@@ -26,7 +26,18 @@ const newId = (prefix: string) => `${prefix}-${nextId++}`;
 
 export const handlers = [
   http.post("*/v1/auth/signup", async ({ request }) => {
-  const { identifiant } = (await request.json()) as { identifiant: string };
+    const { identifiant, mot_de_passe, confirmation_mot_de_passe } = (await request.json()) as {
+      identifiant: string;
+      mot_de_passe: string;
+      confirmation_mot_de_passe: string;
+    };
+  if (identifiant === "existing_user") {
+    return new HttpResponse(null, { status: 409 });
+  } else if (identifiant === "error_user") {
+    return new HttpResponse(null, { status: 500 });
+  } else if (mot_de_passe !== confirmation_mot_de_passe) {
+    return new HttpResponse(null, { status: 400 });
+  }
   return HttpResponse.json({ id: newId("user"), identifiant }, { status: 201 });
 }),
 

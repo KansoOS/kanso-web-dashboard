@@ -6,8 +6,8 @@ function TotpForm({ totpChallenge, onLoginSuccess }: { totpChallenge: string; on
     const [error, setError] = useState<string | null>(null);
 
     return (
-        <div>
-            <h2>Two-Factor Authentication</h2>
+        <div className="auth-card">
+            <h2>Vérification en deux étapes</h2>
             <form onSubmit={async (e) => {
                 e.preventDefault();
                 setError(null);
@@ -15,21 +15,21 @@ function TotpForm({ totpChallenge, onLoginSuccess }: { totpChallenge: string; on
                     await verifyTotp(totpChallenge, totpCode);
                     onLoginSuccess();
                 } catch (err) {
-                    setError('Invalid TOTP code. Please try again.');
+                    setError('Code invalide, réessayez.');
                 }
             }}>
-                <div>
-                    <label htmlFor="totp">Enter TOTP Code:</label>
-                    <input 
-                        type="text" 
-                        id="totp" 
+                <div className="auth-field">
+                    <label htmlFor="totp">Code de l'application d'authentification</label>
+                    <input
+                        type="text"
+                        id="totp"
                         name="totp"
                         value={totpCode}
                         onChange={(e) => setTotpCode(e.target.value)}
                     />
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
                 </div>
-                <button type="submit">Verify</button>
+                {error && <p className="auth-error">{error}</p>}
+                <button type="submit" className="auth-submit">Vérifier</button>
             </form>
         </div>
     );
