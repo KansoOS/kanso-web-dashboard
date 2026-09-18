@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { LoginForm } from "./components/LoginForm"
+import { LoginPage } from "./components/LoginPage"
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -12,7 +12,7 @@ function App() {
 
   return <div>
     Login
-    <LoginForm onLoginSuccess={() => setIsLoggedIn(true)} />
+    <LoginPage onLoginSuccess={() => setIsLoggedIn(true)} />
   </div>
 }
 

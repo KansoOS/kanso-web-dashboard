@@ -1,45 +1,13 @@
 import { useState } from 'react';
-import { login, verifyTotp } from '../api';
+import { login } from '../api';
 
-function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
+function LoginForm({ onChallengeReceived }: { onChallengeReceived: (challenge: string) => void }) {
     const [state, setState] = useState({
         identifiant: '',
         mot_de_passe: '',
     });
-    const [totpChallenge, setTotpChallenge] = useState<string | null>(null);
-    const [totpCode, setTotpCode] = useState('');
     const [error, setError] = useState<string | null>(null);
 
-    if (totpChallenge) {
-        return (
-            <div>
-                <h2>Two-Factor Authentication</h2>
-                <form onSubmit={async (e) => {
-                    e.preventDefault();
-                    setError(null);
-                    try {
-                        await verifyTotp(totpChallenge, totpCode);
-                        onLoginSuccess();
-                    } catch (err) {
-                        setError('Invalid TOTP code. Please try again.');
-                    }
-                }}>
-                    <div>
-                        <label htmlFor="totp">Enter TOTP Code:</label>
-                        <input 
-                            type="text" 
-                            id="totp" 
-                            name="totp"
-                            value={totpCode}
-                            onChange={(e) => setTotpCode(e.target.value)}
-                        />
-                        {error && <p style={{ color: 'red' }}>{error}</p>}
-                    </div>
-                    <button type="submit">Verify</button>
-                </form>
-            </div>
-        );
-    }
     return (
         <div>
             <h2>Login</h2>
@@ -48,7 +16,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
                 setError(null);
                 try {
                     const response = await login(state.identifiant, state.mot_de_passe);
-                    setTotpChallenge(response.totp_challenge);
+                    onChallengeReceived(response.totp_challenge);
                 } catch (err) {
                     setError('Invalid username or password. Please try again.');
                 }
