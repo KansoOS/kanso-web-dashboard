@@ -24,6 +24,8 @@ let policy = { ...mockPolicy, profils: { ...mockPolicy.profils } };
 let nextId = 100;
 const newId = (prefix: string) => `${prefix}-${nextId++}`;
 
+const isAuthenticated = () => document.cookie.includes("session=mock-session");
+
 export const handlers = [
   http.post("*/v1/auth/signup", async ({ request }) => {
     const { identifiant, mot_de_passe, confirmation_mot_de_passe } = (await request.json()) as {
@@ -31,15 +33,15 @@ export const handlers = [
       mot_de_passe: string;
       confirmation_mot_de_passe: string;
     };
-  if (identifiant === "existing_user") {
-    return new HttpResponse(null, { status: 409 });
-  } else if (identifiant === "error_user") {
-    return new HttpResponse(null, { status: 500 });
-  } else if (mot_de_passe !== confirmation_mot_de_passe) {
-    return new HttpResponse(null, { status: 400 });
-  }
-  return HttpResponse.json({ id: newId("user"), identifiant }, { status: 201 });
-}),
+    if (identifiant === "existing_user") {
+      return new HttpResponse(null, { status: 409 });
+    } else if (identifiant === "error_user") {
+      return new HttpResponse(null, { status: 500 });
+    } else if (mot_de_passe !== confirmation_mot_de_passe) {
+      return new HttpResponse(null, { status: 400 });
+    }
+    return HttpResponse.json({ id: newId("user"), identifiant }, { status: 201 });
+  }),
 
   http.post("*/v1/auth/login", async ({ request }) => {
     const { identifiant, mot_de_passe } = (await request.json()) as { identifiant: string; mot_de_passe: string };
@@ -51,17 +53,19 @@ export const handlers = [
   }),
 
   http.post("*/v1/auth/totp", () => {
-    return new HttpResponse(null, {
-      status: 200,
-      headers: { "Set-Cookie": "session=mock-session; HttpOnly; Path=/" },
-    });
+    document.cookie = "session=mock-session; path=/";
+    return new HttpResponse(null, { status: 200 });
   }),
 
   http.post("*/v1/auth/logout", () => {
+    document.cookie = "session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     return new HttpResponse(null, { status: 204 });
   }),
 
   http.get("*/v1/me", () => {
+    if (!isAuthenticated()) {
+      return new HttpResponse(null, { status: 401 });
+    }
     return HttpResponse.json(mockMe);
   }),
 

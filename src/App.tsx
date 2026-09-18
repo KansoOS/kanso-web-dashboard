@@ -1,18 +1,27 @@
 import { useState } from "react"
 import "./App.css"
+import { useMe } from "./hooks/useMe"
 import { LoginPage } from "./components/LoginPage"
 import { SignupForm } from "./components/SignupForm"
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const { data: me, loading, refetch } = useMe()
   const [showSignup, setShowSignup] = useState(false)
 
-  if (isLoggedIn) {
+  if (loading) {
+    return (
+      <div className="app">
+        <p>Chargement...</p>
+      </div>
+    )
+  }
+
+  if (me) {
     return (
       <div className="app">
         <h1>Dashboard</h1>
         <div className="dashboard">
-          <p>Connecté !</p>
+          <p>Connecté en tant que {me.identifiant} !</p>
         </div>
       </div>
     )
@@ -30,7 +39,7 @@ function App() {
         </>
       ) : (
         <>
-          <LoginPage onLoginSuccess={() => setIsLoggedIn(true)} />
+          <LoginPage onLoginSuccess={() => refetch()} />
           <p className="auth-switch">
             Pas de compte ? <button onClick={() => setShowSignup(true)}>Créer un compte</button>
           </p>

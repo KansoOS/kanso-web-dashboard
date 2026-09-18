@@ -9,6 +9,7 @@ function SignupForm() {
     });
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<boolean>(false);
+    const [submitting, setSubmitting] = useState(false);
 
     return (
         <div className="auth-card">
@@ -19,11 +20,20 @@ function SignupForm() {
                 <form onSubmit={async (e) => {
                     e.preventDefault();
                     setError(null);
+
+                    if (state.mot_de_passe !== state.confirmation_mot_de_passe) {
+                        setError('Les mots de passe ne correspondent pas.');
+                        return;
+                    }
+
+                    setSubmitting(true);
                     try {
                         await signup(state.identifiant, state.mot_de_passe, state.confirmation_mot_de_passe)
                         setSuccess(true);
-                    } catch (err) {
+                    } catch {
                         setError("Impossible de créer le compte. Réessayez.");
+                    } finally {
+                        setSubmitting(false);
                     }
                 }}>
                     <div className="auth-field">
@@ -32,6 +42,7 @@ function SignupForm() {
                             type="text"
                             id="identifiant"
                             name="identifiant"
+                            required
                             value={state.identifiant}
                             onChange={(e) => setState({ ...state, identifiant: e.target.value })}
                         />
@@ -42,6 +53,7 @@ function SignupForm() {
                             type="password"
                             id="mot_de_passe"
                             name="mot_de_passe"
+                            required
                             value={state.mot_de_passe}
                             onChange={(e) => setState({ ...state, mot_de_passe: e.target.value })}
                         />
@@ -52,12 +64,15 @@ function SignupForm() {
                             type="password"
                             id="confirmation_mot_de_passe"
                             name="confirmation_mot_de_passe"
+                            required
                             value={state.confirmation_mot_de_passe}
                             onChange={(e) => setState({ ...state, confirmation_mot_de_passe: e.target.value })}
                         />
                     </div>
                     {error && <p className="auth-error">{error}</p>}
-                    <button type="submit" className="auth-submit">S'inscrire</button>
+                    <button type="submit" className="auth-submit" disabled={submitting}>
+                        {submitting ? 'Création...' : "S'inscrire"}
+                    </button>
                 </form>
             )}
         </div>

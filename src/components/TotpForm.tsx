@@ -4,6 +4,7 @@ import { verifyTotp } from "../api";
 function TotpForm({ totpChallenge, onLoginSuccess }: { totpChallenge: string; onLoginSuccess: () => void }) {
     const [totpCode, setTotpCode] = useState('');
     const [error, setError] = useState<string | null>(null);
+    const [submitting, setSubmitting] = useState(false);
 
     return (
         <div className="auth-card">
@@ -11,11 +12,14 @@ function TotpForm({ totpChallenge, onLoginSuccess }: { totpChallenge: string; on
             <form onSubmit={async (e) => {
                 e.preventDefault();
                 setError(null);
+                setSubmitting(true);
                 try {
                     await verifyTotp(totpChallenge, totpCode);
                     onLoginSuccess();
-                } catch (err) {
+                } catch {
                     setError('Code invalide, réessayez.');
+                } finally {
+                    setSubmitting(false);
                 }
             }}>
                 <div className="auth-field">
@@ -24,12 +28,15 @@ function TotpForm({ totpChallenge, onLoginSuccess }: { totpChallenge: string; on
                         type="text"
                         id="totp"
                         name="totp"
+                        required
                         value={totpCode}
                         onChange={(e) => setTotpCode(e.target.value)}
                     />
                 </div>
                 {error && <p className="auth-error">{error}</p>}
-                <button type="submit" className="auth-submit">Vérifier</button>
+                <button type="submit" className="auth-submit" disabled={submitting}>
+                    {submitting ? 'Vérification...' : 'Vérifier'}
+                </button>
             </form>
         </div>
     );
