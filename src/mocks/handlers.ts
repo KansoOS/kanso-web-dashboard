@@ -52,7 +52,11 @@ export const handlers = [
     }
   }),
 
-  http.post("*/v1/auth/totp", () => {
+  http.post("*/v1/auth/totp", async ({ request }) => {
+    const { code } = (await request.json()) as { totp_challenge: string; code: string };
+    if (code !== "123456") {
+      return new HttpResponse(null, { status: 400 });
+    }
     document.cookie = "session=mock-session; path=/";
     return new HttpResponse(null, { status: 200 });
   }),
