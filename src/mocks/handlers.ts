@@ -24,28 +24,52 @@ let policy = { ...mockPolicy, profils: { ...mockPolicy.profils } };
 let nextId = 100;
 const newId = (prefix: string) => `${prefix}-${nextId++}`;
 
+const isAuthenticated = () => document.cookie.includes("session=mock-session");
+
 export const handlers = [
   http.post("*/v1/auth/signup", async ({ request }) => {
-    const { identifiant } = (await request.json()) as { identifiant: string };
+    const { identifiant, mot_de_passe, confirmation_mot_de_passe } = (await request.json()) as {
+      identifiant: string;
+      mot_de_passe: string;
+      confirmation_mot_de_passe: string;
+    };
+    if (identifiant === "existing_user") {
+      return new HttpResponse(null, { status: 409 });
+    } else if (identifiant === "error_user") {
+      return new HttpResponse(null, { status: 500 });
+    } else if (mot_de_passe !== confirmation_mot_de_passe) {
+      return new HttpResponse(null, { status: 400 });
+    }
     return HttpResponse.json({ id: newId("user"), identifiant }, { status: 201 });
   }),
 
-  http.post("*/v1/auth/login", () => {
-    return HttpResponse.json({ totp_challenge: "mock-totp-challenge" });
+  http.post("*/v1/auth/login", async ({ request }) => {
+    const { identifiant, mot_de_passe } = (await request.json()) as { identifiant: string; mot_de_passe: string };
+    if (identifiant === "test" && mot_de_passe === "test") {
+      return HttpResponse.json({ totp_challenge: "mock-totp-challenge" });
+    } else {
+      return new HttpResponse(null, { status: 401 });
+    }
   }),
 
-  http.post("*/v1/auth/totp", () => {
-    return new HttpResponse(null, {
-      status: 200,
-      headers: { "Set-Cookie": "session=mock-session; HttpOnly; Path=/" },
-    });
+  http.post("*/v1/auth/totp", async ({ request }) => {
+    const { code } = (await request.json()) as { totp_challenge: string; code: string };
+    if (code !== "123456") {
+      return new HttpResponse(null, { status: 400 });
+    }
+    document.cookie = "session=mock-session; path=/";
+    return new HttpResponse(null, { status: 200 });
   }),
 
   http.post("*/v1/auth/logout", () => {
+    document.cookie = "session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     return new HttpResponse(null, { status: 204 });
   }),
 
   http.get("*/v1/me", () => {
+    if (!isAuthenticated()) {
+      return new HttpResponse(null, { status: 401 });
+    }
     return HttpResponse.json(mockMe);
   }),
 
