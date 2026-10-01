@@ -30,4 +30,20 @@ describe("App", () => {
     expect(await screen.findByLabelText("Identifiant")).toBeInTheDocument();
     expect(screen.queryByText(/Connecté en tant que/)).not.toBeInTheDocument();
   });
+
+  it("change la langue de l'interface et retient le choix après un remontage", async () => {
+    const user = userEvent.setup();
+    const { unmount } = render(<App />);
+
+    await screen.findByLabelText("Identifiant");
+    await user.selectOptions(screen.getByLabelText("Langue"), "en");
+
+    expect(await screen.findByLabelText("Username")).toBeInTheDocument();
+    expect(screen.queryByLabelText("Identifiant")).not.toBeInTheDocument();
+
+    unmount();
+    render(<App />);
+
+    expect(await screen.findByLabelText("Username")).toBeInTheDocument();
+  });
 });

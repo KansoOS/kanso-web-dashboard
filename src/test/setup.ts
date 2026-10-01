@@ -9,6 +9,7 @@ afterEach(() => {
   cleanup();
   server.resetHandlers();
   document.cookie = "session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+  localStorage.clear();
 });
 
 afterAll(() => server.close());

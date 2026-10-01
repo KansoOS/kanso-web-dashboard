@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { signup } from '../api';
+import { useT } from '../i18n/useI18n';
 
 function SignupForm() {
+    const t = useT();
     const [state, setState] = useState({
         identifiant: '',
         mot_de_passe: '',
@@ -13,16 +15,16 @@ function SignupForm() {
 
     return (
         <div className="auth-card">
-            <h2>Créer un compte</h2>
+            <h2>{t('auth.signup.title')}</h2>
             {success ? (
-                <p>Compte créé avec succès !</p>
+                <p>{t('auth.signup.success')}</p>
             ) : (
                 <form onSubmit={async (e) => {
                     e.preventDefault();
                     setError(null);
 
                     if (state.mot_de_passe !== state.confirmation_mot_de_passe) {
-                        setError('Les mots de passe ne correspondent pas.');
+                        setError(t('auth.signup.errorMismatch'));
                         return;
                     }
 
@@ -31,13 +33,13 @@ function SignupForm() {
                         await signup(state.identifiant, state.mot_de_passe, state.confirmation_mot_de_passe)
                         setSuccess(true);
                     } catch {
-                        setError("Impossible de créer le compte. Réessayez.");
+                        setError(t('auth.signup.errorGeneric'));
                     } finally {
                         setSubmitting(false);
                     }
                 }}>
                     <div className="auth-field">
-                        <label htmlFor="identifiant">Identifiant</label>
+                        <label htmlFor="identifiant">{t('auth.signup.identifiant')}</label>
                         <input
                             type="text"
                             id="identifiant"
@@ -48,7 +50,7 @@ function SignupForm() {
                         />
                     </div>
                     <div className="auth-field">
-                        <label htmlFor="mot_de_passe">Mot de passe</label>
+                        <label htmlFor="mot_de_passe">{t('auth.signup.motDePasse')}</label>
                         <input
                             type="password"
                             id="mot_de_passe"
@@ -59,7 +61,7 @@ function SignupForm() {
                         />
                     </div>
                     <div className="auth-field">
-                        <label htmlFor="confirmation_mot_de_passe">Confirmer le mot de passe</label>
+                        <label htmlFor="confirmation_mot_de_passe">{t('auth.signup.confirmation')}</label>
                         <input
                             type="password"
                             id="confirmation_mot_de_passe"
@@ -71,7 +73,7 @@ function SignupForm() {
                     </div>
                     {error && <p className="auth-error">{error}</p>}
                     <button type="submit" className="auth-submit" disabled={submitting}>
-                        {submitting ? 'Création...' : "S'inscrire"}
+                        {submitting ? t('auth.signup.submitting') : t('auth.signup.submit')}
                     </button>
                 </form>
             )}
