@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { login } from '../api';
+import { useT } from '../i18n/useI18n';
 
 function LoginForm({ onChallengeReceived }: { onChallengeReceived: (challenge: string) => void }) {
+    const t = useT();
     const [state, setState] = useState({
         identifiant: '',
         mot_de_passe: '',
@@ -11,7 +13,7 @@ function LoginForm({ onChallengeReceived }: { onChallengeReceived: (challenge: s
 
     return (
         <div className="auth-card">
-            <h2>Connexion</h2>
+            <h2>{t('auth.login.title')}</h2>
             <form onSubmit={async (e) => {
                 e.preventDefault();
                 setError(null);
@@ -20,13 +22,13 @@ function LoginForm({ onChallengeReceived }: { onChallengeReceived: (challenge: s
                     const response = await login(state.identifiant, state.mot_de_passe);
                     onChallengeReceived(response.totp_challenge);
                 } catch {
-                    setError('Identifiant ou mot de passe incorrect.');
+                    setError(t('auth.login.error'));
                 } finally {
                     setSubmitting(false);
                 }
             }}>
                 <div className="auth-field">
-                    <label htmlFor="username">Identifiant</label>
+                    <label htmlFor="username">{t('auth.login.identifiant')}</label>
                     <input
                         type="text"
                         id="username"
@@ -37,7 +39,7 @@ function LoginForm({ onChallengeReceived }: { onChallengeReceived: (challenge: s
                     />
                 </div>
                 <div className="auth-field">
-                    <label htmlFor="password">Mot de passe</label>
+                    <label htmlFor="password">{t('auth.login.motDePasse')}</label>
                     <input
                         type="password"
                         id="password"
@@ -49,7 +51,7 @@ function LoginForm({ onChallengeReceived }: { onChallengeReceived: (challenge: s
                 </div>
                 {error && <p className="auth-error">{error}</p>}
                 <button type="submit" className="auth-submit" disabled={submitting}>
-                    {submitting ? 'Connexion...' : 'Se connecter'}
+                    {submitting ? t('auth.login.submitting') : t('auth.login.submit')}
                 </button>
             </form>
         </div>

@@ -3,15 +3,19 @@ import "./App.css"
 import { useMe } from "./hooks/useMe"
 import { LoginPage } from "./components/LoginPage"
 import { SignupForm } from "./components/SignupForm"
+import { LanguageSwitcher } from "./components/LanguageSwitcher"
+import { I18nProvider } from "./i18n/I18nProvider"
+import { useT } from "./i18n/useI18n"
 
-function App() {
+function AppContent() {
   const { data: me, loading, refetch } = useMe()
   const [showSignup, setShowSignup] = useState(false)
+  const t = useT()
 
   if (loading) {
     return (
       <div className="app">
-        <p>Chargement...</p>
+        <p>{t("common.loading")}</p>
       </div>
     )
   }
@@ -19,9 +23,12 @@ function App() {
   if (me) {
     return (
       <div className="app">
-        <h1>Dashboard</h1>
+        <div className="app-header">
+          <h1>{t("dashboard.title")}</h1>
+          <LanguageSwitcher />
+        </div>
         <div className="dashboard">
-          <p>Connecté en tant que {me.identifiant} !</p>
+          <p>{t("dashboard.greeting", { identifiant: me.identifiant })}</p>
         </div>
       </div>
     )
@@ -29,23 +36,34 @@ function App() {
 
   return (
     <div className="app">
-      <h1>KansoOS</h1>
+      <div className="app-header">
+        <h1>{t("common.appName")}</h1>
+        <LanguageSwitcher />
+      </div>
       {showSignup ? (
         <>
           <SignupForm />
           <p className="auth-switch">
-            Déjà un compte ? <button onClick={() => setShowSignup(false)}>Se connecter</button>
+            {t("auth.switch.toLogin")} <button onClick={() => setShowSignup(false)}>{t("auth.switch.toLoginAction")}</button>
           </p>
         </>
       ) : (
         <>
           <LoginPage onLoginSuccess={() => refetch()} />
           <p className="auth-switch">
-            Pas de compte ? <button onClick={() => setShowSignup(true)}>Créer un compte</button>
+            {t("auth.switch.toSignup")} <button onClick={() => setShowSignup(true)}>{t("auth.switch.toSignupAction")}</button>
           </p>
         </>
       )}
     </div>
+  )
+}
+
+function App() {
+  return (
+    <I18nProvider>
+      <AppContent />
+    </I18nProvider>
   )
 }
 
