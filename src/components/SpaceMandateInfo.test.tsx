@@ -13,9 +13,9 @@ describe("SpaceMandateInfo", () => {
     expect(screen.getByText("niveaux.proposer")).toBeInTheDocument();
     expect(screen.getByText("journal.consulter")).toBeInTheDocument();
 
-    // Les dates de validité du mandat sont affichées (pas juste "actif"), en
-    // UTC (le mandat mock commence le 1er janvier 2026 à minuit UTC — ça doit
-    // rester affiché tel quel, pas décalé au 31 décembre 2025 par un fuseau local).
+    // Les dates de validité du mandat sont affichées, pas juste "actif", et en
+    // UTC, parce que le mandat mock commence le 1er janvier 2026 à minuit UTC
+    // et ça doit rester affiché tel quel, pas décalé au 31 décembre 2025 par un fuseau local.
     expect(screen.getByText(/1 janvier 2026.*1 janvier 2027/)).toBeInTheDocument();
   });
 

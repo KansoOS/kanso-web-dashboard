@@ -8,9 +8,9 @@ import { SpaceMandateInfo } from "./components/SpaceMandateInfo"
 import { I18nProvider } from "./i18n/I18nProvider"
 import { useI18n } from "./i18n/useI18n"
 
-// Pas de route backend pour lister les espaces d'un aidant : on retient
-// juste le dernier espace consulté, localement. À remplacer par un vrai
-// sélecteur dès qu'une route de listing existe côté backend.
+// Il n'existe pas de route backend pour lister les espaces d'un aidant, donc
+// on retient juste le dernier espace consulté, localement, et on remplacera
+// ça par un vrai sélecteur dès qu'une route de listing existera côté backend.
 const SPACE_ID_STORAGE_KEY = "kanso.currentSpaceId"
 
 function readStoredSpaceId(): string | null {
@@ -42,7 +42,7 @@ function AppContent() {
       if (id) localStorage.setItem(SPACE_ID_STORAGE_KEY, id)
       else localStorage.removeItem(SPACE_ID_STORAGE_KEY)
     } catch {
-      // Pas grave : le choix reste actif pour la session en cours.
+      // Ce n'est pas grave si ça échoue, le choix reste actif pour la session en cours.
     }
   }
 

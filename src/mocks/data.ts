@@ -15,9 +15,9 @@ export const mockMe: Me = {
   createdAt: "2026-01-01T00:00:00.000Z",
 };
 
-// Pas encore porté par /v1/me côté backend-mdm (seule l'identité de l'aidant
-// y est exposée pour l'instant, aucune route ne liste les espaces d'un
-// aidant) : gardé à part pour les routes espaces/mandat.
+// Ce n'est pas encore porté par /v1/me côté backend-mdm, seule l'identité de
+// l'aidant y est exposée pour l'instant et aucune route ne liste les espaces
+// d'un aidant, donc c'est gardé à part pour les routes espaces et mandat.
 export const mockSpaces: SpaceSummary[] = [
   { id: "space-1", pseudonym: "Espace de Léo", createdAt: "2026-01-01T00:00:00.000Z" },
   // Espace sans mandat en vigueur, pour tester cet état dans le dashboard.

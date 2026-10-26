@@ -98,8 +98,9 @@ export const handlers = [
   }),
 
   http.get("*/v1/spaces/:id/mandate", ({ params }) => {
-    // Comme le backend : 404 s'il n'y a aucun mandat en vigueur pour cet
-    // espace (pas de route de révocation à mocker, elle n'existe pas encore).
+    // Comme le backend, on renvoie une 404 s'il n'y a aucun mandat en vigueur
+    // pour cet espace, et il n'y a pas de route de révocation à mocker
+    // puisqu'elle n'existe pas encore.
     if (params.id !== mandate.spaceId) {
       return new HttpResponse(null, { status: 404 });
     }

@@ -2,9 +2,9 @@ import { ApiError } from '../api';
 import { useMandate, useSpace } from '../hooks/useSpace';
 import { useT } from '../i18n/useI18n';
 
-// En UTC explicitement : ce sont des dates de validité (jour calendaire),
-// pas un instant précis — sans ça, l'affichage décale d'un jour pour
-// n'importe qui est dans un fuseau derrière UTC (toutes les Amériques).
+// On formate explicitement en UTC parce que ce sont des dates de validité,
+// un jour calendaire, pas un instant précis, et sans ça l'affichage décale
+// d'un jour pour quiconque est dans un fuseau derrière UTC, donc toutes les Amériques.
 function formatDate(iso: string, locale: string): string {
     return new Date(iso).toLocaleDateString(locale, {
         day: 'numeric',
@@ -35,7 +35,8 @@ function SpaceMandateInfo({ spaceId, locale }: { spaceId: string; locale: string
         );
     }
 
-    // 404 : pas de mandat en vigueur pour cet espace — un état normal, pas une erreur à afficher en rouge.
+    // Une 404 ici veut juste dire qu'il n'y a pas de mandat en vigueur pour cet
+    // espace, c'est un état normal, pas une erreur à afficher en rouge.
     const hasNoMandate = mandateError instanceof ApiError && mandateError.status === 404;
 
     return (

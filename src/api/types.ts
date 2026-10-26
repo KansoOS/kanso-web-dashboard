@@ -37,9 +37,10 @@ export interface SignupResult {
  */
 export type LoginResult = { mfaRequired: true; mfaToken: string } | { accessToken: string };
 
-// GET /v1/spaces/:spaceId/mandate ne renvoie que le mandat en vigueur
-// (revokedAt null, startDate <= maintenant <= endDate) — pas d'historique des
-// mandats révoqués/expirés pour l'instant côté backend.
+// GET /v1/spaces/:spaceId/mandate ne renvoie que le mandat en vigueur,
+// c'est-à-dire celui dont revokedAt est null et dont la période startDate à
+// endDate couvre maintenant, donc il n'y a pas d'historique des mandats
+// révoqués ou expirés pour l'instant côté backend.
 export interface Mandate {
   id: string;
   spaceId: string;
