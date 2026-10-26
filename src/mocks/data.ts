@@ -16,16 +16,24 @@ export const mockMe: Me = {
 };
 
 // Pas encore porté par /v1/me côté backend-mdm (seule l'identité de l'aidant
-// y est exposée pour l'instant) : gardé à part pour les routes espaces/mandat.
-export const mockSpaces: SpaceSummary[] = [{ id: "space-1", nom_affichage: "Espace de Léo" }];
+// y est exposée pour l'instant, aucune route ne liste les espaces d'un
+// aidant) : gardé à part pour les routes espaces/mandat.
+export const mockSpaces: SpaceSummary[] = [
+  { id: "space-1", pseudonym: "Espace de Léo", createdAt: "2026-01-01T00:00:00.000Z" },
+  // Espace sans mandat en vigueur, pour tester cet état dans le dashboard.
+  { id: "space-2", pseudonym: "Espace sans mandat", createdAt: "2026-02-01T00:00:00.000Z" },
+];
 
 export const mockMandate: Mandate = {
   id: "mandate-1",
-  perimetre: ["contacts.gerer", "niveaux.proposer", "journal.consulter"],
-  date_debut: "2026-01-01T00:00:00.000Z",
-  date_fin: "2027-01-01T00:00:00.000Z",
-  revoque_le: null,
-  revoque_par: null,
+  spaceId: "space-1",
+  helperId: "helper-1",
+  scope: ["contacts.gerer", "niveaux.proposer", "journal.consulter"],
+  startDate: "2026-01-01T00:00:00.000Z",
+  endDate: "2027-01-01T00:00:00.000Z",
+  revokedAt: null,
+  revokedById: null,
+  createdAt: "2026-01-01T00:00:00.000Z",
 };
 
 export const mockDevices: Device[] = [
