@@ -177,7 +177,7 @@ function AppContent() {
   }
 
   return (
-    <div className="app">
+    <div className="app landing-page">
       <a className="skip-link" href="#main-content">{t("common.skipToContent")}</a>
 
       <div className="app-header">
@@ -188,11 +188,33 @@ function AppContent() {
         <LanguageSwitcher />
       </div>
 
-      <section className="landing-hero">
-        <h2 className="landing-title">{t("landing.heroTitle")}</h2>
-        <p className="landing-subtitle">{t("landing.heroSubtitle")}</p>
+      <main id="main-content" className="landing-main">
+        <section className="landing-hero">
+          <div className="landing-hero-copy">
+            <h2 className="landing-title">{t("landing.heroTitle")}</h2>
+            <p className="landing-subtitle">{t("landing.heroSubtitle")}</p>
+          </div>
 
-        <div className="landing-features">
+          <div className="landing-auth">
+            {showSignup ? (
+              <>
+                <SignupForm />
+                <p className="auth-switch">
+                  {t("auth.switch.toLogin")} <button onClick={() => setShowSignup(false)}>{t("auth.switch.toLoginAction")}</button>
+                </p>
+              </>
+            ) : (
+              <>
+                <LoginPage onLoginSuccess={() => refetch()} />
+                <p className="auth-switch">
+                  {t("auth.switch.toSignup")} <button onClick={() => setShowSignup(true)}>{t("auth.switch.toSignupAction")}</button>
+                </p>
+              </>
+            )}
+          </div>
+        </section>
+
+        <section className="landing-features">
           <div className="landing-feature">
             <span className="landing-feature-icon"><ScrollIcon /></span>
             <h3>{t("landing.feature1Title")}</h3>
@@ -208,25 +230,7 @@ function AppContent() {
             <h3>{t("landing.feature3Title")}</h3>
             <p>{t("landing.feature3Body")}</p>
           </div>
-        </div>
-      </section>
-
-      <main id="main-content">
-        {showSignup ? (
-          <>
-            <SignupForm />
-            <p className="auth-switch">
-              {t("auth.switch.toLogin")} <button onClick={() => setShowSignup(false)}>{t("auth.switch.toLoginAction")}</button>
-            </p>
-          </>
-        ) : (
-          <>
-            <LoginPage onLoginSuccess={() => refetch()} />
-            <p className="auth-switch">
-              {t("auth.switch.toSignup")} <button onClick={() => setShowSignup(true)}>{t("auth.switch.toSignupAction")}</button>
-            </p>
-          </>
-        )}
+        </section>
       </main>
       <Footer />
     </div>
