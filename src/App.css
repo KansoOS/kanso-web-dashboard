@@ -124,6 +124,82 @@
   text-align: center;
 }
 
+.dashboard-app {
+  width: 100%;
+  align-items: stretch;
+  padding: 0;
+}
+
+.dashboard-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 16px 32px;
+  border-bottom: 1px solid var(--border);
+  box-sizing: border-box;
+}
+
+.dashboard-nav h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.dashboard-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.logout-button {
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--text-h);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+.dashboard-main {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.dashboard-greeting {
+  font-size: 16px;
+  color: var(--text-h);
+  margin: 0 0 24px;
+}
+
+.dashboard-main .space-card {
+  margin-top: 0;
+  max-width: 100%;
+}
+
 .space-card h2 {
   margin: 0 0 4px;
 }

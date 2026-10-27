@@ -43,6 +43,9 @@ const en: Dictionary = {
     title: "Dashboard",
     greeting: "Logged in as {{email}}!",
   },
+  nav: {
+    logout: "Log out",
+  },
   space: {
     idLabel: "Space ID",
     idPlaceholder: "e.g. 3f6a1c2e-...",

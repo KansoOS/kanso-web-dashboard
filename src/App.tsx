@@ -1,5 +1,6 @@
 import { useState } from "react"
 import "./App.css"
+import { logout } from "./api"
 import { useMe } from "./hooks/useMe"
 import { LoginPage } from "./components/LoginPage"
 import { SignupForm } from "./components/SignupForm"
@@ -46,49 +47,71 @@ function AppContent() {
     }
   }
 
-  if (me) {
-    return (
-      <div className="app">
-        <div className="app-header">
-          <h1>{t("dashboard.title")}</h1>
-          <LanguageSwitcher />
-        </div>
-        <div className="dashboard">
-          <p>{t("dashboard.greeting", { email: me.email })}</p>
-        </div>
+  const handleLogout = async () => {
+    try {
+      await logout()
+    } finally {
+      // Un autre aidant pourrait se connecter ensuite sur ce même navigateur,
+      // donc on ne laisse pas traîner le choix d'espace de la session précédente.
+      setAndStoreSpaceId(null)
+      refetch()
+    }
+  }
 
-        {spaceId ? (
-          <>
-            <SpaceMandateInfo spaceId={spaceId} locale={locale} />
-            <p className="auth-switch">
-              <button onClick={() => setAndStoreSpaceId(null)}>{t("space.change")}</button>
-            </p>
-          </>
-        ) : (
-          <form
-            className="auth-card space-card"
-            onSubmit={(e) => {
-              e.preventDefault()
-              if (spaceIdInput.trim()) setAndStoreSpaceId(spaceIdInput.trim())
-            }}
-          >
-            <div className="auth-field">
-              <label htmlFor="space-id">{t("space.idLabel")}</label>
-              <input
-                type="text"
-                id="space-id"
-                name="space-id"
-                placeholder={t("space.idPlaceholder")}
-                required
-                value={spaceIdInput}
-                onChange={(e) => setSpaceIdInput(e.target.value)}
-              />
-            </div>
-            <button type="submit" className="auth-submit">
-              {t("space.show")}
+  if (me) {
+    const avatarLetter = me.email.charAt(0).toUpperCase()
+
+    return (
+      <div className="app dashboard-app">
+        <header className="dashboard-nav">
+          <h1>{t("dashboard.title")}</h1>
+          <div className="dashboard-nav-actions">
+            <LanguageSwitcher />
+            <span className="user-avatar" title={me.email} aria-label={me.email}>
+              {avatarLetter}
+            </span>
+            <button className="logout-button" onClick={handleLogout}>
+              {t("nav.logout")}
             </button>
-          </form>
-        )}
+          </div>
+        </header>
+
+        <main className="dashboard-main">
+          <p className="dashboard-greeting">{t("dashboard.greeting", { email: me.email })}</p>
+
+          {spaceId ? (
+            <>
+              <SpaceMandateInfo spaceId={spaceId} locale={locale} />
+              <p className="auth-switch">
+                <button onClick={() => setAndStoreSpaceId(null)}>{t("space.change")}</button>
+              </p>
+            </>
+          ) : (
+            <form
+              className="auth-card space-card"
+              onSubmit={(e) => {
+                e.preventDefault()
+                if (spaceIdInput.trim()) setAndStoreSpaceId(spaceIdInput.trim())
+              }}
+            >
+              <div className="auth-field">
+                <label htmlFor="space-id">{t("space.idLabel")}</label>
+                <input
+                  type="text"
+                  id="space-id"
+                  name="space-id"
+                  placeholder={t("space.idPlaceholder")}
+                  required
+                  value={spaceIdInput}
+                  onChange={(e) => setSpaceIdInput(e.target.value)}
+                />
+              </div>
+              <button type="submit" className="auth-submit">
+                {t("space.show")}
+              </button>
+            </form>
+          )}
+        </main>
       </div>
     )
   }

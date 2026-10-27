@@ -43,6 +43,9 @@ export interface Dictionary {
     title: string;
     greeting: string;
   };
+  nav: {
+    logout: string;
+  };
   space: {
     idLabel: string;
     idPlaceholder: string;

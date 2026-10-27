@@ -44,6 +44,9 @@ const fr: Dictionary = {
     title: "Dashboard",
     greeting: "Connecté en tant que {{email}} !",
   },
+  nav: {
+    logout: "Se déconnecter",
+  },
   space: {
     idLabel: "Identifiant de l'espace",
     idPlaceholder: "ex. 3f6a1c2e-...",
