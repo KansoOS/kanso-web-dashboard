@@ -16,6 +16,20 @@
   --social-bg: rgba(244, 243, 236, 0.5);
   --error: #dc2626;
   --error-bg: rgba(220, 38, 38, 0.08);
+  /* Ton chaud secondaire (inspiré d'une page d'accompagnement senior) : pour
+     humaniser l'écran d'accueil et distinguer "bon état"/"à surveiller" sur
+     les appareils — jamais pour du texte critique, juste de la décoration
+     et des fonds doux. */
+  --warm: #d97a52;
+  --warm-bg: rgba(217, 122, 82, 0.12);
+  --ok: #16a34a;
+  --ok-bg: rgba(22, 163, 74, 0.1);
+  /* Versions texte, plus sombres : --ok/--attention seuls ne passent que
+     ~3:1 (mesuré), insuffisant pour du texte normal (4.5:1 requis). */
+  --ok-text: #0a6b31;
+  --attention: #d97706;
+  --attention-bg: rgba(217, 119, 6, 0.12);
+  --attention-text: #9a5103;
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
@@ -55,6 +69,14 @@
     --social-bg: rgba(47, 48, 58, 0.5);
     --error: #f87171;
     --error-bg: rgba(248, 113, 113, 0.12);
+    --warm: #e8946f;
+    --warm-bg: rgba(232, 148, 111, 0.15);
+    --ok: #4ade80;
+    --ok-bg: rgba(74, 222, 128, 0.14);
+    --ok-text: var(--ok);
+    --attention: #fbbf24;
+    --attention-bg: rgba(251, 191, 36, 0.15);
+    --attention-text: var(--attention);
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   }

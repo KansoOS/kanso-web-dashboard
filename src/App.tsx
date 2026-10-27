@@ -6,8 +6,10 @@ import { LoginPage } from "./components/LoginPage"
 import { SignupForm } from "./components/SignupForm"
 import { LanguageSwitcher } from "./components/LanguageSwitcher"
 import { SpaceMandateInfo } from "./components/SpaceMandateInfo"
+import { DevicesPanel } from "./components/DevicesPanel"
+import { DevicesSummary } from "./components/DevicesSummary"
 import { Footer } from "./components/Footer"
-import { ShieldIcon, LogoutIcon } from "./components/icons"
+import { ShieldIcon, LogoutIcon, BuildingIcon, PhoneIcon, LockIcon, ScrollIcon } from "./components/icons"
 import { I18nProvider } from "./i18n/I18nProvider"
 import { useI18n } from "./i18n/useI18n"
 
@@ -24,11 +26,14 @@ function readStoredSpaceId(): string | null {
   }
 }
 
+type Tab = "overview" | "devices"
+
 function AppContent() {
   const { data: me, loading, refetch } = useMe()
   const [showSignup, setShowSignup] = useState(false)
   const [spaceId, setSpaceId] = useState<string | null>(() => readStoredSpaceId())
   const [spaceIdInput, setSpaceIdInput] = useState("")
+  const [activeTab, setActiveTab] = useState<Tab>("overview")
   const { locale, t } = useI18n()
 
   if (loading) {
@@ -56,8 +61,22 @@ function AppContent() {
       // Un autre aidant pourrait se connecter ensuite sur ce même navigateur,
       // donc on ne laisse pas traîner le choix d'espace de la session précédente.
       setAndStoreSpaceId(null)
+      setActiveTab("overview")
       refetch()
     }
+  }
+
+  const tabs: { id: Tab; label: string }[] = [
+    { id: "overview", label: t("tabs.overview") },
+    { id: "devices", label: t("tabs.devices") },
+  ]
+
+  const handleTabKeyDown = (e: React.KeyboardEvent, index: number) => {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return
+    e.preventDefault()
+    const next = e.key === "ArrowRight" ? (index + 1) % tabs.length : (index - 1 + tabs.length) % tabs.length
+    setActiveTab(tabs[next].id)
+    document.getElementById(`tab-${tabs[next].id}`)?.focus()
   }
 
   if (me) {
@@ -87,37 +106,68 @@ function AppContent() {
         <main className="dashboard-main" id="main-content">
           <p className="dashboard-greeting">{t("dashboard.greeting", { email: me.email })}</p>
 
-          {spaceId ? (
-            <>
-              <SpaceMandateInfo spaceId={spaceId} locale={locale} />
-              <p className="auth-switch">
-                <button onClick={() => setAndStoreSpaceId(null)}>{t("space.change")}</button>
-              </p>
-            </>
-          ) : (
-            <form
-              className="auth-card space-card"
-              onSubmit={(e) => {
-                e.preventDefault()
-                if (spaceIdInput.trim()) setAndStoreSpaceId(spaceIdInput.trim())
-              }}
-            >
-              <div className="auth-field">
-                <label htmlFor="space-id">{t("space.idLabel")}</label>
-                <input
-                  type="text"
-                  id="space-id"
-                  name="space-id"
-                  placeholder={t("space.idPlaceholder")}
-                  required
-                  value={spaceIdInput}
-                  onChange={(e) => setSpaceIdInput(e.target.value)}
-                />
-              </div>
-              <button type="submit" className="auth-submit">
-                {t("space.show")}
-              </button>
-            </form>
+          {spaceId && (
+            <div className="tabs" role="tablist" aria-label={t("tabs.label")}>
+              {tabs.map((tab, index) => (
+                <button
+                  key={tab.id}
+                  id={`tab-${tab.id}`}
+                  role="tab"
+                  type="button"
+                  aria-selected={activeTab === tab.id}
+                  aria-controls={`panel-${tab.id}`}
+                  tabIndex={activeTab === tab.id ? 0 : -1}
+                  className={`tab ${activeTab === tab.id ? "tab-active" : ""}`}
+                  onClick={() => setActiveTab(tab.id)}
+                  onKeyDown={(e) => handleTabKeyDown(e, index)}
+                >
+                  {tab.id === "overview" ? <BuildingIcon /> : <PhoneIcon />}
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" hidden={spaceId !== null && activeTab !== "overview"}>
+            {spaceId ? (
+              <>
+                <SpaceMandateInfo spaceId={spaceId} locale={locale} />
+                <DevicesSummary spaceId={spaceId} onViewDevices={() => setActiveTab("devices")} />
+                <p className="auth-switch">
+                  <button onClick={() => setAndStoreSpaceId(null)}>{t("space.change")}</button>
+                </p>
+              </>
+            ) : (
+              <form
+                className="auth-card space-card"
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  if (spaceIdInput.trim()) setAndStoreSpaceId(spaceIdInput.trim())
+                }}
+              >
+                <div className="auth-field">
+                  <label htmlFor="space-id">{t("space.idLabel")}</label>
+                  <input
+                    type="text"
+                    id="space-id"
+                    name="space-id"
+                    placeholder={t("space.idPlaceholder")}
+                    required
+                    value={spaceIdInput}
+                    onChange={(e) => setSpaceIdInput(e.target.value)}
+                  />
+                </div>
+                <button type="submit" className="auth-submit">
+                  {t("space.show")}
+                </button>
+              </form>
+            )}
+          </div>
+
+          {spaceId && (
+            <div id="panel-devices" role="tabpanel" aria-labelledby="tab-devices" hidden={activeTab !== "devices"}>
+              <DevicesPanel spaceId={spaceId} locale={locale} />
+            </div>
           )}
         </main>
 
@@ -137,6 +187,30 @@ function AppContent() {
         </div>
         <LanguageSwitcher />
       </div>
+
+      <section className="landing-hero">
+        <h2 className="landing-title">{t("landing.heroTitle")}</h2>
+        <p className="landing-subtitle">{t("landing.heroSubtitle")}</p>
+
+        <div className="landing-features">
+          <div className="landing-feature">
+            <span className="landing-feature-icon"><ScrollIcon /></span>
+            <h3>{t("landing.feature1Title")}</h3>
+            <p>{t("landing.feature1Body")}</p>
+          </div>
+          <div className="landing-feature">
+            <span className="landing-feature-icon"><PhoneIcon /></span>
+            <h3>{t("landing.feature2Title")}</h3>
+            <p>{t("landing.feature2Body")}</p>
+          </div>
+          <div className="landing-feature">
+            <span className="landing-feature-icon"><LockIcon /></span>
+            <h3>{t("landing.feature3Title")}</h3>
+            <p>{t("landing.feature3Body")}</p>
+          </div>
+        </div>
+      </section>
+
       <main id="main-content">
         {showSignup ? (
           <>

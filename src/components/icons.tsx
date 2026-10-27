@@ -67,4 +67,61 @@ function LockIcon(props: SVGProps<SVGSVGElement>) {
     );
 }
 
-export { ShieldIcon, LogoutIcon, BuildingIcon, ScrollIcon, LockIcon };
+function PhoneIcon(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg {...iconProps(props)}>
+            <rect x="6" y="2" width="12" height="20" rx="2" />
+            <path d="M11 18h2" />
+        </svg>
+    );
+}
+
+function PlusIcon(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg {...iconProps(props)}>
+            <path d="M12 5v14M5 12h14" />
+        </svg>
+    );
+}
+
+function TrashIcon(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg {...iconProps(props)}>
+            <path d="M4 7h16" />
+            <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+            <path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13" />
+        </svg>
+    );
+}
+
+function CheckCircleIcon(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg {...iconProps(props)}>
+            <circle cx="12" cy="12" r="9" />
+            <path d="m8.5 12.5 2.3 2.3 4.7-5" />
+        </svg>
+    );
+}
+
+function AlertIcon(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg {...iconProps(props)}>
+            <path d="M12 3 2 20h20z" />
+            <path d="M12 10v4" />
+            <path d="M12 17h.01" />
+        </svg>
+    );
+}
+
+export {
+    ShieldIcon,
+    LogoutIcon,
+    BuildingIcon,
+    ScrollIcon,
+    LockIcon,
+    PhoneIcon,
+    PlusIcon,
+    TrashIcon,
+    CheckCircleIcon,
+    AlertIcon,
+};
