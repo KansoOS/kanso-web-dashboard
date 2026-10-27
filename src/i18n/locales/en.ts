@@ -76,7 +76,7 @@ const en: Dictionary = {
     heroTitle: "Supporting someone, together and with confidence",
     heroSubtitle: "KansoOS gives every helper a clear mandate, tracked devices, and the certainty that private data stays private.",
     feature1Title: "A clear mandate",
-    feature1Body: "Every helper sees exactly what they're allowed to do, and until when — never just an \"active\" status with no detail.",
+    feature1Body: "Every helper sees exactly what they're allowed to do and until when, rather than a plain \"active\" status with no detail.",
     feature2Title: "Devices at a glance",
     feature2Body: "An overview flags right away if a device needs attention, without having to dig for it.",
     feature3Title: "Your data stays protected",

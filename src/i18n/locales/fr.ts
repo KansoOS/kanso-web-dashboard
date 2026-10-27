@@ -77,7 +77,7 @@ const fr: Dictionary = {
     heroTitle: "Accompagner, ensemble et en confiance",
     heroSubtitle: "KansoOS donne à chaque aidant un mandat clair, des appareils suivis, et la certitude que les données restées privées le restent.",
     feature1Title: "Un mandat clair",
-    feature1Body: "Chaque aidant voit précisément ce qu'il est autorisé à faire, et jusqu'à quand — jamais un simple statut \"actif\" sans détail.",
+    feature1Body: "Chaque aidant voit précisément ce qu'il est autorisé à faire et jusqu'à quand, plutôt qu'un simple statut « actif » sans détail.",
     feature2Title: "Les appareils en un coup d'œil",
     feature2Body: "Une vue d'ensemble signale tout de suite si un appareil a besoin d'attention, sans avoir à fouiller.",
     feature3Title: "Vos données protégées",
