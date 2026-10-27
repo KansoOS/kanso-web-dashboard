@@ -66,6 +66,17 @@ function AppContent() {
     }
   }
 
+  // Les boutons de la topbar et du bandeau collant en bas ne font que ramener
+  // l'aidant jusqu'au champ e-mail de la carte de connexion déjà affichée,
+  // plutôt que de dupliquer le formulaire ailleurs sur la page.
+  const scrollToLogin = () => {
+    const email = document.getElementById("email") as HTMLInputElement | null
+    if (!email) return
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    email.focus({ preventScroll: true })
+    email.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "center" })
+  }
+
   const tabs: { id: Tab; label: string }[] = [
     { id: "overview", label: t("tabs.overview") },
     { id: "devices", label: t("tabs.devices") },
@@ -172,6 +183,13 @@ function AppContent() {
         </main>
 
         <Footer />
+
+        <div className="sticky-cta-bar">
+          <button type="button" className="sticky-cta-button" onClick={handleLogout}>
+            <LogoutIcon />
+            {t("nav.logout")}
+          </button>
+        </div>
       </div>
     )
   }
@@ -185,7 +203,12 @@ function AppContent() {
           <ShieldIcon />
           <h1>{t("common.appName")}</h1>
         </div>
-        <LanguageSwitcher />
+        <div className="app-header-actions">
+          <LanguageSwitcher />
+          <button type="button" className="nav-cta-button" onClick={scrollToLogin}>
+            {t("nav.login")}
+          </button>
+        </div>
       </div>
 
       <main id="main-content" className="landing-main">
@@ -233,6 +256,12 @@ function AppContent() {
         </section>
       </main>
       <Footer />
+
+      <div className="sticky-cta-bar">
+        <button type="button" className="sticky-cta-button" onClick={scrollToLogin}>
+          {t("nav.login")}
+        </button>
+      </div>
     </div>
   )
 }

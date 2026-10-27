@@ -46,6 +46,7 @@ const en: Dictionary = {
   },
   nav: {
     logout: "Log out",
+    login: "Sign in",
   },
   tabs: {
     label: "Dashboard sections",

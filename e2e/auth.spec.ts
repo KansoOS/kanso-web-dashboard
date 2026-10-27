@@ -10,7 +10,9 @@ test.describe('authentification', () => {
 
         await expect(page.getByText(/Connecté en tant que/)).toBeVisible();
 
-        await page.getByRole('button', { name: 'Se déconnecter' }).click();
+        // Le bandeau collant en bas de page propose aussi un bouton "Se déconnecter" : on vise
+        // explicitement celui de la topbar pour ne pas tomber sur un nom accessible ambigu.
+        await page.locator('.dashboard-nav').getByRole('button', { name: 'Se déconnecter' }).click();
 
         await expect(page.getByLabel('Adresse e-mail')).toBeVisible();
     });

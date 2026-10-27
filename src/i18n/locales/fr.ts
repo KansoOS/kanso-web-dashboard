@@ -47,6 +47,7 @@ const fr: Dictionary = {
   },
   nav: {
     logout: "Se déconnecter",
+    login: "Connexion",
   },
   tabs: {
     label: "Sections du tableau de bord",

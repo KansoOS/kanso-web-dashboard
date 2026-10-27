@@ -46,6 +46,7 @@ export interface Dictionary {
   };
   nav: {
     logout: string;
+    login: string;
   };
   tabs: {
     label: string;
