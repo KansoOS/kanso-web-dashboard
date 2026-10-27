@@ -46,6 +46,12 @@ export interface Dictionary {
   nav: {
     logout: string;
   };
+  footer: {
+    dataMinimization: string;
+    privacyToggle: string;
+    privacyDetail: string;
+    copyright: string;
+  };
   space: {
     idLabel: string;
     idPlaceholder: string;

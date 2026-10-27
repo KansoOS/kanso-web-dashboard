@@ -6,6 +6,8 @@ import { LoginPage } from "./components/LoginPage"
 import { SignupForm } from "./components/SignupForm"
 import { LanguageSwitcher } from "./components/LanguageSwitcher"
 import { SpaceMandateInfo } from "./components/SpaceMandateInfo"
+import { Footer } from "./components/Footer"
+import { ShieldIcon, LogoutIcon } from "./components/icons"
 import { I18nProvider } from "./i18n/I18nProvider"
 import { useI18n } from "./i18n/useI18n"
 
@@ -64,14 +66,18 @@ function AppContent() {
     return (
       <div className="app dashboard-app">
         <header className="dashboard-nav">
-          <h1>{t("dashboard.title")}</h1>
+          <div className="dashboard-nav-brand">
+            <ShieldIcon />
+            <h1>{t("dashboard.title")}</h1>
+          </div>
           <div className="dashboard-nav-actions">
             <LanguageSwitcher />
             <span className="user-avatar" title={me.email} aria-label={me.email}>
               {avatarLetter}
             </span>
             <button className="logout-button" onClick={handleLogout}>
-              {t("nav.logout")}
+              <LogoutIcon />
+              <span className="logout-button-label">{t("nav.logout")}</span>
             </button>
           </div>
         </header>
@@ -112,6 +118,8 @@ function AppContent() {
             </form>
           )}
         </main>
+
+        <Footer />
       </div>
     )
   }
@@ -119,7 +127,10 @@ function AppContent() {
   return (
     <div className="app">
       <div className="app-header">
-        <h1>{t("common.appName")}</h1>
+        <div className="app-header-brand">
+          <ShieldIcon />
+          <h1>{t("common.appName")}</h1>
+        </div>
         <LanguageSwitcher />
       </div>
       {showSignup ? (
@@ -137,6 +148,7 @@ function AppContent() {
           </p>
         </>
       )}
+      <Footer />
     </div>
   )
 }

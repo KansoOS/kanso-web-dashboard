@@ -47,6 +47,12 @@ const fr: Dictionary = {
   nav: {
     logout: "Se déconnecter",
   },
+  footer: {
+    dataMinimization: "KansoOS ne reçoit jamais le contenu de vos messages, votre position, ni vos données de navigation.",
+    privacyToggle: "Confidentialité",
+    privacyDetail: "Nous ne collectons que ce qui est nécessaire au service, votre email, et le mandat et le périmètre que vous avez définis. Aucune donnée n'est partagée à des fins publicitaires.",
+    copyright: "© {{year}} KansoOS",
+  },
   space: {
     idLabel: "Identifiant de l'espace",
     idPlaceholder: "ex. 3f6a1c2e-...",

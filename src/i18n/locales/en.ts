@@ -46,6 +46,12 @@ const en: Dictionary = {
   nav: {
     logout: "Log out",
   },
+  footer: {
+    dataMinimization: "KansoOS never receives the content of your messages, your location, or your browsing data.",
+    privacyToggle: "Privacy",
+    privacyDetail: "We only collect what the service needs, your email, and the mandate and scope you've defined. No data is shared for advertising purposes.",
+    copyright: "© {{year}} KansoOS",
+  },
   space: {
     idLabel: "Space ID",
     idPlaceholder: "e.g. 3f6a1c2e-...",
