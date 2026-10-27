@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import "./App.css"
 import { logout } from "./api"
 import { useMe } from "./hooks/useMe"
@@ -31,10 +31,22 @@ type Tab = "overview" | "devices"
 function AppContent() {
   const { data: me, loading, refetch } = useMe()
   const [showSignup, setShowSignup] = useState(false)
+  const [showAuth, setShowAuth] = useState(false)
   const [spaceId, setSpaceId] = useState<string | null>(() => readStoredSpaceId())
   const [spaceIdInput, setSpaceIdInput] = useState("")
   const [activeTab, setActiveTab] = useState<Tab>("overview")
   const { locale, t } = useI18n()
+
+  // La carte de connexion n'apparaît qu'au clic sur le bouton de la topbar,
+  // donc on attend qu'elle soit montée pour amener le focus sur le champ e-mail.
+  useEffect(() => {
+    if (!showAuth) return
+    const email = document.getElementById("email") as HTMLInputElement | null
+    if (!email) return
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    email.focus({ preventScroll: true })
+    email.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "center" })
+  }, [showAuth])
 
   if (loading) {
     return (
@@ -66,16 +78,6 @@ function AppContent() {
     }
   }
 
-  // Les boutons de la topbar et du bandeau collant en bas ne font que ramener
-  // l'aidant jusqu'au champ e-mail de la carte de connexion déjà affichée,
-  // plutôt que de dupliquer le formulaire ailleurs sur la page.
-  const scrollToLogin = () => {
-    const email = document.getElementById("email") as HTMLInputElement | null
-    if (!email) return
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    email.focus({ preventScroll: true })
-    email.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "center" })
-  }
 
   const tabs: { id: Tab; label: string }[] = [
     { id: "overview", label: t("tabs.overview") },
@@ -205,36 +207,38 @@ function AppContent() {
         </div>
         <div className="app-header-actions">
           <LanguageSwitcher />
-          <button type="button" className="nav-cta-button" onClick={scrollToLogin}>
+          <button type="button" className="nav-cta-button" onClick={() => setShowAuth(true)}>
             {t("nav.login")}
           </button>
         </div>
       </div>
 
       <main id="main-content" className="landing-main">
-        <section className="landing-hero">
+        <section className={`landing-hero ${showAuth ? "" : "landing-hero-solo"}`}>
           <div className="landing-hero-copy">
             <h2 className="landing-title">{t("landing.heroTitle")}</h2>
             <p className="landing-subtitle">{t("landing.heroSubtitle")}</p>
           </div>
 
-          <div className="landing-auth">
-            {showSignup ? (
-              <>
-                <SignupForm />
-                <p className="auth-switch">
-                  {t("auth.switch.toLogin")} <button onClick={() => setShowSignup(false)}>{t("auth.switch.toLoginAction")}</button>
-                </p>
-              </>
-            ) : (
-              <>
-                <LoginPage onLoginSuccess={() => refetch()} />
-                <p className="auth-switch">
-                  {t("auth.switch.toSignup")} <button onClick={() => setShowSignup(true)}>{t("auth.switch.toSignupAction")}</button>
-                </p>
-              </>
-            )}
-          </div>
+          {showAuth && (
+            <div className="landing-auth">
+              {showSignup ? (
+                <>
+                  <SignupForm />
+                  <p className="auth-switch">
+                    {t("auth.switch.toLogin")} <button onClick={() => setShowSignup(false)}>{t("auth.switch.toLoginAction")}</button>
+                  </p>
+                </>
+              ) : (
+                <>
+                  <LoginPage onLoginSuccess={() => refetch()} />
+                  <p className="auth-switch">
+                    {t("auth.switch.toSignup")} <button onClick={() => setShowSignup(true)}>{t("auth.switch.toSignupAction")}</button>
+                  </p>
+                </>
+              )}
+            </div>
+          )}
         </section>
 
         <section className="landing-features">
@@ -256,12 +260,6 @@ function AppContent() {
         </section>
       </main>
       <Footer />
-
-      <div className="sticky-cta-bar">
-        <button type="button" className="sticky-cta-button" onClick={scrollToLogin}>
-          {t("nav.login")}
-        </button>
-      </div>
     </div>
   )
 }

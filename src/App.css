@@ -19,7 +19,7 @@
 
 .landing-page {
   align-items: stretch;
-  padding: 0 0 88px;
+  padding: 0;
 }
 
 .landing-main {
@@ -742,6 +742,18 @@ summary:focus-visible {
   padding: 40px 32px 48px;
   box-sizing: border-box;
   text-align: left;
+}
+
+.landing-hero-solo {
+  grid-template-columns: 1fr;
+  max-width: 720px;
+  text-align: center;
+  padding-top: 64px;
+  padding-bottom: 64px;
+}
+
+.landing-hero-solo .landing-subtitle {
+  margin: 0 auto;
 }
 
 .landing-title {

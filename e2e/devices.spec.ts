@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 
 async function loginAndShowSpace(page: import('@playwright/test').Page) {
     await page.goto('/');
+    await page.getByRole('button', { name: 'Connexion' }).click();
     await page.getByLabel('Adresse e-mail').fill('nomfa@kanso.test');
     await page.getByLabel('Mot de passe').fill('nomfa1234');
     await page.getByRole('button', { name: 'Se connecter' }).click();

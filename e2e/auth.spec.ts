@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('authentification', () => {
     test('connexion sans MFA, puis déconnexion, dans un vrai navigateur', async ({ page }) => {
         await page.goto('/');
+        await page.getByRole('button', { name: 'Connexion' }).click();
 
         await page.getByLabel('Adresse e-mail').fill('nomfa@kanso.test');
         await page.getByLabel('Mot de passe').fill('nomfa1234');
@@ -19,6 +20,7 @@ test.describe('authentification', () => {
 
     test('connexion avec MFA demande le code TOTP', async ({ page }) => {
         await page.goto('/');
+        await page.getByRole('button', { name: 'Connexion' }).click();
 
         await page.getByLabel('Adresse e-mail').fill('test@kanso.test');
         await page.getByLabel('Mot de passe').fill('test1234');
@@ -34,6 +36,7 @@ test.describe('authentification', () => {
 
     test('inscription réussie affiche un message de succès', async ({ page }) => {
         await page.goto('/');
+        await page.getByRole('button', { name: 'Connexion' }).click();
 
         await page.getByRole('button', { name: 'Créer un compte' }).click();
         await page.getByLabel('Adresse e-mail').fill('nouvel.utilisateur@kanso.test');

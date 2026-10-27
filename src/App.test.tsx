@@ -8,6 +8,7 @@ describe("App", () => {
     const user = userEvent.setup();
     const { unmount } = render(<App />);
 
+    await user.click(await screen.findByRole("button", { name: "Connexion" }));
     await user.type(await screen.findByLabelText("Adresse e-mail"), "test@kanso.test");
     await user.type(screen.getByLabelText("Mot de passe"), "test1234");
     await user.click(screen.getByRole("button", { name: "Se connecter" }));
@@ -25,7 +26,10 @@ describe("App", () => {
   });
 
   it("n'est pas connecté au premier chargement sans session existante", async () => {
+    const user = userEvent.setup();
     render(<App />);
+
+    await user.click(await screen.findByRole("button", { name: "Connexion" }));
 
     expect(await screen.findByLabelText("Adresse e-mail")).toBeInTheDocument();
     expect(screen.queryByText(/Connecté en tant que/)).not.toBeInTheDocument();
@@ -35,6 +39,7 @@ describe("App", () => {
     const user = userEvent.setup();
     const { unmount } = render(<App />);
 
+    await user.click(await screen.findByRole("button", { name: "Connexion" }));
     await user.type(await screen.findByLabelText("Adresse e-mail"), "nomfa@kanso.test");
     await user.type(screen.getByLabelText("Mot de passe"), "nomfa1234");
     await user.click(screen.getByRole("button", { name: "Se connecter" }));
@@ -58,6 +63,7 @@ describe("App", () => {
     const user = userEvent.setup();
     render(<App />);
 
+    await user.click(await screen.findByRole("button", { name: "Connexion" }));
     await user.type(await screen.findByLabelText("Adresse e-mail"), "nomfa@kanso.test");
     await user.type(screen.getByLabelText("Mot de passe"), "nomfa1234");
     await user.click(screen.getByRole("button", { name: "Se connecter" }));
@@ -84,6 +90,7 @@ describe("App", () => {
     const user = userEvent.setup();
     const { unmount } = render(<App />);
 
+    await user.click(await screen.findByRole("button", { name: "Connexion" }));
     await screen.findByLabelText("Adresse e-mail");
     await user.selectOptions(screen.getByLabelText("Langue"), "en");
 
@@ -93,6 +100,7 @@ describe("App", () => {
     unmount();
     render(<App />);
 
+    await user.click(await screen.findByRole("button", { name: "Sign in" }));
     expect(await screen.findByLabelText("Email address")).toBeInTheDocument();
   });
 });
