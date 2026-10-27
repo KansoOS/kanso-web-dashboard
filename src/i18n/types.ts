@@ -4,6 +4,7 @@ export interface Dictionary {
   common: {
     appName: string;
     loading: string;
+    skipToContent: string;
   };
   auth: {
     login: {
@@ -50,6 +51,10 @@ export interface Dictionary {
     dataMinimization: string;
     privacyToggle: string;
     privacyDetail: string;
+    legalToggle: string;
+    legalDetail: string;
+    contactToggle: string;
+    contactDetail: string;
     copyright: string;
   };
   space: {

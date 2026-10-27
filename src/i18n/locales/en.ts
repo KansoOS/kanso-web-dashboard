@@ -4,6 +4,7 @@ const en: Dictionary = {
   common: {
     appName: "KansoOS",
     loading: "Loading...",
+    skipToContent: "Skip to main content",
   },
   auth: {
     login: {
@@ -49,7 +50,11 @@ const en: Dictionary = {
   footer: {
     dataMinimization: "KansoOS never receives the content of your messages, your location, or your browsing data.",
     privacyToggle: "Privacy",
-    privacyDetail: "We only collect what the service needs, your email, and the mandate and scope you've defined. No data is shared for advertising purposes.",
+    privacyDetail: "Data controller: the KansoOS project team (Epitech student project). Data collected: your email and encrypted password, a two-factor code if you enable it, the pseudonym and dates of the care space, and the scope and validity period of any mandate you've granted or received. No message content, no location, no browsing data. Legal basis: performance of the contract between you and the service. Retention: your session expires after 12 hours or 30 minutes of inactivity; how long account data is kept after deletion is still to be defined by the project team. You have the right to access, rectify, erase, restrict and port your data (GDPR articles 15 to 21), to be exercised with the project team, and the right to lodge a complaint with the CNIL (cnil.fr).",
+    legalToggle: "Legal notice",
+    legalDetail: "KansoOS is a project built as part of an Epitech degree. Publisher, editor-in-chief and hosting provider: to be filled in by the project team before any real production use. This notice is a demo template, not a legally binding one.",
+    contactToggle: "Contact",
+    contactDetail: "A question about your account, a care space, or a mandate? Reach the KansoOS project team through the project's usual channels.",
     copyright: "© {{year}} KansoOS",
   },
   space: {

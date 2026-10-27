@@ -65,6 +65,8 @@ function AppContent() {
 
     return (
       <div className="app dashboard-app">
+        <a className="skip-link" href="#main-content">{t("common.skipToContent")}</a>
+
         <header className="dashboard-nav">
           <div className="dashboard-nav-brand">
             <ShieldIcon />
@@ -82,7 +84,7 @@ function AppContent() {
           </div>
         </header>
 
-        <main className="dashboard-main">
+        <main className="dashboard-main" id="main-content">
           <p className="dashboard-greeting">{t("dashboard.greeting", { email: me.email })}</p>
 
           {spaceId ? (
@@ -126,6 +128,8 @@ function AppContent() {
 
   return (
     <div className="app">
+      <a className="skip-link" href="#main-content">{t("common.skipToContent")}</a>
+
       <div className="app-header">
         <div className="app-header-brand">
           <ShieldIcon />
@@ -133,21 +137,23 @@ function AppContent() {
         </div>
         <LanguageSwitcher />
       </div>
-      {showSignup ? (
-        <>
-          <SignupForm />
-          <p className="auth-switch">
-            {t("auth.switch.toLogin")} <button onClick={() => setShowSignup(false)}>{t("auth.switch.toLoginAction")}</button>
-          </p>
-        </>
-      ) : (
-        <>
-          <LoginPage onLoginSuccess={() => refetch()} />
-          <p className="auth-switch">
-            {t("auth.switch.toSignup")} <button onClick={() => setShowSignup(true)}>{t("auth.switch.toSignupAction")}</button>
-          </p>
-        </>
-      )}
+      <main id="main-content">
+        {showSignup ? (
+          <>
+            <SignupForm />
+            <p className="auth-switch">
+              {t("auth.switch.toLogin")} <button onClick={() => setShowSignup(false)}>{t("auth.switch.toLoginAction")}</button>
+            </p>
+          </>
+        ) : (
+          <>
+            <LoginPage onLoginSuccess={() => refetch()} />
+            <p className="auth-switch">
+              {t("auth.switch.toSignup")} <button onClick={() => setShowSignup(true)}>{t("auth.switch.toSignupAction")}</button>
+            </p>
+          </>
+        )}
+      </main>
       <Footer />
     </div>
   )

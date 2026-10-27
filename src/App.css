@@ -42,6 +42,33 @@
   cursor: pointer;
 }
 
+.skip-link {
+  position: absolute;
+  top: -48px;
+  left: 8px;
+  z-index: 10;
+  padding: 10px 16px;
+  background: var(--accent-text);
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: 8px;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -108,7 +135,9 @@
   font: inherit;
   font-weight: 500;
   color: #fff;
-  background: var(--accent);
+  /* --accent-text, pas --accent : du blanc sur --accent direct ne passe que
+     4.39:1 (mesuré), sous le seuil de 4.5:1 exigé pour du texte normal. */
+  background: var(--accent-text);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -127,7 +156,7 @@
 .auth-switch button {
   padding: 0;
   font: inherit;
-  color: var(--accent);
+  color: var(--accent-text);
   text-decoration: underline;
   background: none;
   border: none;
@@ -141,6 +170,10 @@
 
 .dashboard-app {
   width: 100%;
+  /* Sans ça, un flex-item ne rétrécit jamais sous la taille de son contenu
+     (min-width: auto par défaut) : une chaîne insécable comme un email long
+     dans .dashboard-greeting pousserait toute la page plus large que l'écran. */
+  min-width: 0;
   align-items: stretch;
   padding: 0;
   background: var(--canvas);
@@ -181,7 +214,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--accent-text);
   color: #fff;
   font-size: 14px;
   font-weight: 600;
@@ -204,7 +237,7 @@
 
 .logout-button:hover {
   border-color: var(--accent-border);
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .dashboard-main {
@@ -220,6 +253,9 @@
   font-size: 16px;
   color: var(--text-h);
   margin: 0 0 24px;
+  /* Filet de sécurité en plus du min-width:0 plus haut : une adresse email
+     très longue ne doit jamais forcer un débordement horizontal. */
+  overflow-wrap: anywhere;
 }
 
 .dashboard-main .space-card {
@@ -307,42 +343,55 @@
 
 .app-footer-data {
   max-width: 480px;
-  margin: 0 auto 12px;
+  margin: 0 auto 16px;
 }
 
-.app-footer-privacy {
-  display: inline-block;
-  margin: 0 auto 12px;
+.app-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 8px 24px;
+  max-width: 640px;
+  margin: 0 auto 16px;
+}
+
+.app-footer-disclosure {
   text-align: left;
 }
 
-.app-footer-privacy summary {
+.app-footer-disclosure summary {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--accent);
+  color: var(--accent-text);
   cursor: pointer;
   list-style: none;
+  font-weight: 500;
 }
 
-.app-footer-privacy summary svg {
+.app-footer-disclosure summary svg {
   flex-shrink: 0;
 }
 
-.app-footer-privacy summary::-webkit-details-marker {
+.app-footer-disclosure summary::-webkit-details-marker {
   display: none;
 }
 
-.app-footer-privacy p {
+.app-footer-disclosure p {
   max-width: 420px;
-  margin: 8px auto 0;
+  margin: 8px 0 0;
   text-align: left;
+  line-height: 1.5;
+}
+
+.app-footer-disclosure[open] {
+  width: 100%;
 }
 
 .app-footer-copyright {
   margin: 0;
   color: var(--text);
-  opacity: 0.8;
 }
 
 @media (max-width: 640px) {
