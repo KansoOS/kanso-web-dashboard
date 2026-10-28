@@ -72,9 +72,7 @@ describe("App", () => {
     await user.click(screen.getByRole("button", { name: "Afficher" }));
     await screen.findByText("Espace de Léo");
 
-    // Le bandeau collant en bas de page a aussi un bouton "Se déconnecter" :
-    // on prend celui de la topbar, le premier dans le document.
-    await user.click(screen.getAllByRole("button", { name: "Se déconnecter" })[0]);
+    await user.click(screen.getByRole("button", { name: "Se déconnecter" }));
 
     expect(await screen.findByLabelText("Adresse e-mail")).toBeInTheDocument();
     expect(screen.queryByText(/Connecté en tant que/)).not.toBeInTheDocument();

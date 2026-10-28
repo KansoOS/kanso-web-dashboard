@@ -182,13 +182,6 @@ function AppContent() {
         </main>
 
         <Footer />
-
-        <div className="sticky-cta-bar">
-          <button type="button" className="sticky-cta-button" onClick={handleLogout}>
-            <LogoutIcon />
-            {t("nav.logout")}
-          </button>
-        </div>
       </div>
     )
   }

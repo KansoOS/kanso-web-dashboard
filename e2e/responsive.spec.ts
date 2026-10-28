@@ -31,9 +31,7 @@ test.describe('responsive (petit écran, iPhone SE 375px)', () => {
 
         // Le texte est visuellement masqué en dessous de 640px (voir App.css),
         // mais reste dans l'arbre d'accessibilité : le bouton doit donc
-        // toujours être trouvable par son nom accessible. Le bandeau collant en
-        // bas de page a aussi un bouton "Se déconnecter", donc on vise celui de
-        // la topbar explicitement pour garder un nom accessible unique.
-        await expect(page.locator('.dashboard-nav').getByRole('button', { name: 'Se déconnecter' })).toBeVisible();
+        // toujours être trouvable par son nom accessible.
+        await expect(page.getByRole('button', { name: 'Se déconnecter' })).toBeVisible();
     });
 });
