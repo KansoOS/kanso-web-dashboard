@@ -55,6 +55,7 @@ const en: Dictionary = {
   },
   devices: {
     title: "Devices",
+    noSpace: "Choose a space from the Overview tab first to see its devices.",
     summary: "{{count}} active device(s)",
     summaryAttention: "{{count}} need attention",
     empty: "No device linked to this space yet.",
@@ -94,6 +95,7 @@ const en: Dictionary = {
   },
   space: {
     idLabel: "Space ID",
+    idExplain: "We can't yet list the spaces you have access to automatically, so enter the ID of the space you were given.",
     idPlaceholder: "e.g. 3f6a1c2e-...",
     show: "Show",
     change: "Change space",

@@ -119,29 +119,27 @@ function AppContent() {
         <main className="dashboard-main" id="main-content">
           <p className="dashboard-greeting">{t("dashboard.greeting", { email: me.email })}</p>
 
-          {spaceId && (
-            <div className="tabs" role="tablist" aria-label={t("tabs.label")}>
-              {tabs.map((tab, index) => (
-                <button
-                  key={tab.id}
-                  id={`tab-${tab.id}`}
-                  role="tab"
-                  type="button"
-                  aria-selected={activeTab === tab.id}
-                  aria-controls={`panel-${tab.id}`}
-                  tabIndex={activeTab === tab.id ? 0 : -1}
-                  className={`tab ${activeTab === tab.id ? "tab-active" : ""}`}
-                  onClick={() => setActiveTab(tab.id)}
-                  onKeyDown={(e) => handleTabKeyDown(e, index)}
-                >
-                  {tab.id === "overview" ? <BuildingIcon /> : <PhoneIcon />}
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          )}
+          <div className="tabs" role="tablist" aria-label={t("tabs.label")}>
+            {tabs.map((tab, index) => (
+              <button
+                key={tab.id}
+                id={`tab-${tab.id}`}
+                role="tab"
+                type="button"
+                aria-selected={activeTab === tab.id}
+                aria-controls={`panel-${tab.id}`}
+                tabIndex={activeTab === tab.id ? 0 : -1}
+                className={`tab ${activeTab === tab.id ? "tab-active" : ""}`}
+                onClick={() => setActiveTab(tab.id)}
+                onKeyDown={(e) => handleTabKeyDown(e, index)}
+              >
+                {tab.id === "overview" ? <BuildingIcon /> : <PhoneIcon />}
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-          <div id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" hidden={spaceId !== null && activeTab !== "overview"}>
+          <div id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" hidden={activeTab !== "overview"}>
             {spaceId ? (
               <>
                 <SpaceMandateInfo spaceId={spaceId} locale={locale} />
@@ -160,6 +158,7 @@ function AppContent() {
               >
                 <div className="auth-field">
                   <label htmlFor="space-id">{t("space.idLabel")}</label>
+                  <p className="field-explain">{t("space.idExplain")}</p>
                   <input
                     type="text"
                     id="space-id"
@@ -177,11 +176,9 @@ function AppContent() {
             )}
           </div>
 
-          {spaceId && (
-            <div id="panel-devices" role="tabpanel" aria-labelledby="tab-devices" hidden={activeTab !== "devices"}>
-              <DevicesPanel spaceId={spaceId} locale={locale} />
-            </div>
-          )}
+          <div id="panel-devices" role="tabpanel" aria-labelledby="tab-devices" hidden={activeTab !== "devices"}>
+            {spaceId ? <DevicesPanel spaceId={spaceId} locale={locale} /> : <p className="devices-no-space">{t("devices.noSpace")}</p>}
+          </div>
         </main>
 
         <Footer />

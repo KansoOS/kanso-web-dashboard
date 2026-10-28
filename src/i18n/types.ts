@@ -55,6 +55,7 @@ export interface Dictionary {
   };
   devices: {
     title: string;
+    noSpace: string;
     summary: string;
     summaryAttention: string;
     empty: string;
@@ -94,6 +95,7 @@ export interface Dictionary {
   };
   space: {
     idLabel: string;
+    idExplain: string;
     idPlaceholder: string;
     show: string;
     change: string;

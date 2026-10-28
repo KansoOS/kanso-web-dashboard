@@ -56,6 +56,7 @@ const fr: Dictionary = {
   },
   devices: {
     title: "Appareils",
+    noSpace: "Choisissez d'abord un espace depuis l'onglet Vue d'ensemble pour voir ses appareils.",
     summary: "{{count}} appareil(s) actif(s)",
     summaryAttention: "{{count}} à surveiller",
     empty: "Aucun appareil associé à cet espace pour l'instant.",
@@ -95,6 +96,7 @@ const fr: Dictionary = {
   },
   space: {
     idLabel: "Identifiant de l'espace",
+    idExplain: "Nous ne pouvons pas encore lister automatiquement les espaces auxquels vous avez accès, donc saisissez l'identifiant de l'espace d'accompagnement qui vous a été communiqué.",
     idPlaceholder: "ex. 3f6a1c2e-...",
     show: "Afficher",
     change: "Changer d'espace",
